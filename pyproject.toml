@@ -1,0 +1,17 @@
+[project]
+name = "cuidamed"
+version = "1.0.0"
+description = "Gerenciador de horários de medicamentos para idosos e cuidadores"
+requires-python = ">=3.9"
+dependencies = []
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
