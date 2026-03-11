@@ -10,7 +10,7 @@ Gerenciador de horarios de medicamentos via linha de comando (CLI), voltado para
 
 No Brasil, erros na administracao de medicamentos sao uma das principais causas de internacoes entre idosos. Esquecer horarios, tomar doses duplicadas ou interromper tratamentos sao situacoes comuns, especialmente quando ha multiplos medicamentos envolvidos. Cuidadores e familiares muitas vezes nao tem uma ferramenta simples para organizar e consultar essa rotina.
 
-## Proposta de Solucao
+## Proposta de Solução
 
 O CuidaMed oferece uma interface CLI simples para cadastrar, listar, buscar e remover medicamentos com seus respectivos horarios e doses diarias. Os dados sao salvos localmente em um arquivo JSON, sem necessidade de internet ou conta em servico externo.
 
@@ -41,7 +41,7 @@ O CuidaMed oferece uma interface CLI simples para cadastrar, listar, buscar e re
 
 ---
 
-## Instalacao
+## Instalação
 
 ```bash
 git clone https://github.com/HenriMafra/cuidamed.git
@@ -57,7 +57,7 @@ pip install -r requirements.txt
 
 ---
 
-## Execucao
+## Execucão
 
 ```bash
 python src/main.py
@@ -114,7 +114,7 @@ cuidamed/
 
 ---
 
-## Versao
+## Versão
 
 1.0.0 — veja CHANGELOG.md
 
