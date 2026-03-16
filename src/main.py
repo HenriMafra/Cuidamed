@@ -1,96 +1,90 @@
 import sys
 import os
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.dirname(__file__))
 
-from medicamentos import adicionar, listar, remover, buscar
-
-VERSAO = "1.0.0"
-
-MENU = """
-CuidaMed v{versao} - Gerenciador de Medicamentos
-
-  1. Adicionar medicamento
-  2. Listar medicamentos
-  3. Remover medicamento
-  4. Buscar medicamento
-  0. Sair
-
-"""
+from medicamentos import (
+    carregar_medicamentos,
+    salvar_medicamentos,
+    adicionar_medicamento,
+    listar_medicamentos,
+    remover_medicamento,
+    buscar_medicamento,
+)
+from api import buscar_info_medicamento, formatar_info
 
 
-def exibir_menu():
-    print(MENU.format(versao=VERSAO))
-
-
-def cmd_adicionar():
-    nome = input("Nome do medicamento: ").strip()
-    horario = input("Horario (HH:MM): ").strip()
-    try:
-        doses = int(input("Doses por dia: ").strip())
-    except ValueError:
-        print("\nErro: doses por dia deve ser um numero inteiro.")
-        return
-    try:
-        med = adicionar(nome, horario, doses)
-        print(f"\n'{med['nome']}' adicionado com sucesso.")
-        print(f"Horario: {med['horario']} | {med['doses_por_dia']}x ao dia")
-    except ValueError as e:
-        print(f"\nErro: {e}")
-
-
-def cmd_listar():
-    meds = listar()
-    if not meds:
-        print("\nNenhum medicamento cadastrado.")
-        return
-    print(f"\n{'#':<4} {'Nome':<25} {'Horario':<10} {'Doses/dia'}")
-    print("-" * 50)
-    for i, m in enumerate(meds, 1):
-        print(f"{i:<4} {m['nome']:<25} {m['horario']:<10} {m['doses_por_dia']}x")
-
-
-def cmd_remover():
-    nome = input("Nome do medicamento a remover: ").strip()
-    try:
-        med = remover(nome)
-        print(f"\n'{med['nome']}' removido com sucesso.")
-    except ValueError as e:
-        print(f"\nErro: {e}")
-
-
-def cmd_buscar():
-    termo = input("Digite o nome ou parte do nome: ").strip()
-    resultado = buscar(termo)
-    if not resultado:
-        print(f"\nNenhum resultado para '{termo}'.")
-        return
-    print(f"\n{len(resultado)} resultado(s) encontrado(s):")
-    print(f"{'Nome':<25} {'Horario':<10} {'Doses/dia'}")
-    print("-" * 45)
-    for m in resultado:
-        print(f"{m['nome']:<25} {m['horario']:<10} {m['doses_por_dia']}x")
+def menu():
+    print("\n" + "=" * 45)
+    print("  CuidaMed v1.1.0 - Gerenciador de Medicamentos")
+    print("=" * 45)
+    print("  1. Adicionar medicamento")
+    print("  2. Listar medicamentos")
+    print("  3. Remover medicamento")
+    print("  4. Buscar medicamento")
+    print("  5. Consultar informações do medicamento (API)")
+    print("  0. Sair")
+    print("=" * 45)
 
 
 def main():
-    acoes = {
-        "1": cmd_adicionar,
-        "2": cmd_listar,
-        "3": cmd_remover,
-        "4": cmd_buscar,
-    }
+    medicamentos = carregar_medicamentos()
 
     while True:
-        exibir_menu()
-        opcao = input("Escolha uma opcao: ").strip()
-        if opcao == "0":
-            print("\nAte logo.\n")
+        menu()
+        opcao = input("  Escolha uma opção: ").strip()
+
+        if opcao == "1":
+            nome = input("  Nome do medicamento: ").strip()
+            horario = input("  Horário (ex: 08:00): ").strip()
+            while True:
+                try:
+                    doses = int(input("  Doses por dia: ").strip())
+                    break
+                except ValueError:
+                    print("  Digite um número válido.")
+            medicamentos = adicionar_medicamento(medicamentos, nome, horario, doses)
+            salvar_medicamentos(medicamentos)
+            print(f"\n  '{nome}' adicionado com sucesso!")
+
+        elif opcao == "2":
+            resultado = listar_medicamentos(medicamentos)
+            print("\n" + resultado)
+
+        elif opcao == "3":
+            nome = input("  Nome do medicamento a remover: ").strip()
+            medicamentos, removido = remover_medicamento(medicamentos, nome)
+            if removido:
+                salvar_medicamentos(medicamentos)
+                print(f"\n  '{nome}' removido com sucesso!")
+            else:
+                print(f"\n  '{nome}' não encontrado.")
+
+        elif opcao == "4":
+            termo = input("  Buscar por nome: ").strip()
+            encontrados = buscar_medicamento(medicamentos, termo)
+            if encontrados:
+                print(f"\n  {len(encontrados)} resultado(s) encontrado(s):")
+                for m in encontrados:
+                    print(f"  - {m['nome']} | {m['horario']} | {m['doses_por_dia']}x/dia")
+            else:
+                print("\n  Nenhum medicamento encontrado.")
+
+        elif opcao == "5":
+            nome = input("  Nome do medicamento para consultar: ").strip()
+            print("\n  Consultando OpenFDA...")
+            info = buscar_info_medicamento(nome)
+            if info:
+                print(formatar_info(info))
+            else:
+                print(f"\n  Nenhuma informação encontrada para '{nome}' na base OpenFDA.")
+
+        elif opcao == "0":
+            print("\n  Encerrando CuidaMed. Até logo!\n")
             break
-        elif opcao in acoes:
-            acoes[opcao]()
-            input("\nPressione Enter para continuar...")
+
         else:
-            print("\nOpcao invalida. Tente novamente.")
+            print("\n  Opção inválida. Tente novamente.")
 
 
 if __name__ == "__main__":
