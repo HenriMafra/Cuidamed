@@ -1,43 +1,49 @@
 # CuidaMed
 
-![CI](https://github.com/HenriMafra/cuidamed/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/HenriMafra/cuidamed/actions/workflows/ci.yml/badge.svg)](https://github.com/HenriMafra/cuidamed/actions/workflows/ci.yml)
 
-Gerenciador de horarios de medicamentos via linha de comando (CLI), voltado para idosos, cuidadores e familiares que precisam organizar rotinas de medicacao de forma simples e confiavel.
+Gerenciador de horários de medicamentos via linha de comando (CLI) e interface web, voltado para idosos, cuidadores e familiares que precisam organizar rotinas de medicação de forma simples e confiável.
+
+**Aplicação publicada:** [https://cuidamed.streamlit.app/](https://cuidamed.streamlit.app/)
 
 ---
 
 ## Problema Real
 
-No Brasil, erros na administracao de medicamentos sao uma das principais causas de internacoes entre idosos. Esquecer horarios, tomar doses duplicadas ou interromper tratamentos sao situacoes comuns, especialmente quando ha multiplos medicamentos envolvidos. Cuidadores e familiares muitas vezes nao tem uma ferramenta simples para organizar e consultar essa rotina.
+No Brasil, erros na administração de medicamentos são uma das principais causas de internações entre idosos. Esquecer horários, tomar doses duplicadas ou interromper tratamentos são situações comuns, especialmente quando há múltiplos medicamentos envolvidos. Cuidadores e familiares muitas vezes não têm uma ferramenta simples para organizar e consultar essa rotina.
 
 ## Proposta de Solução
 
-O CuidaMed oferece uma interface CLI simples para cadastrar, listar, buscar e remover medicamentos com seus respectivos horarios e doses diarias. Os dados sao salvos localmente em um arquivo JSON, garantindo a privacidade dos dados de saude e o funcionamento offline, sem necessidade de internet ou conta em servico externo.
+O CuidaMed oferece uma interface CLI simples e uma interface web (Streamlit) para cadastrar, listar, buscar e remover medicamentos com seus respectivos horários e doses diárias. A versão 1.1.0 adiciona integração com a API pública OpenFDA para consultar informações técnicas sobre medicamentos. Os cadastros do usuário são salvos localmente em um arquivo JSON (garantindo o funcionamento offline e a privacidade), enquanto a consulta avançada de bulas via API exige conexão com a internet.
 
-## Publico-alvo
+## Público-alvo
 
-- Idosos com rotina de medicacao ativa
-- Cuidadores e tecnicos de enfermagem domiciliar
-- Familiares responsaveis pela medicacao de parentes
+* Idosos com rotina de medicação
+* Cuidadores e técnicos de enfermagem domiciliar
+* Familiares responsáveis pela medicação de parentes
 
 ---
 
 ## Funcionalidades
 
-- Adicionar medicamento com nome, horario inicial e doses por dia
-- Listar todos os medicamentos cadastrados de forma organizada
-- Remover medicamento por nome para encerrar tratamentos
-- Buscar medicamento por nome ou parte do nome
-- Persistencia automatica de dados em arquivo JSON local
+* Adicionar medicamento com nome, horário e doses por dia
+* Listar todos os medicamentos cadastrados de forma organizada
+* Remover medicamento por nome para encerrar tratamentos
+* Buscar medicamento por nome ou parte do nome
+* Persistência automática de dados em arquivo JSON local
+* **[NOVO]** Consultar informações de medicamentos via API pública OpenFDA
+* **[NOVO]** Interface web disponível online via Streamlit
 
 ---
 
 ## Tecnologias
 
-- Python 3.9+
-- pytest — testes automatizados
-- ruff — linting e analise estatica
-- GitHub Actions — integracao continua (CI)
+* Python 3.9+
+* requests — consumo de API REST (OpenFDA)
+* streamlit — interface web para deploy
+* pytest — testes automatizados
+* ruff — linting e análise estática
+* GitHub Actions — integração contínua (CI)
 
 ---
 
@@ -45,86 +51,83 @@ O CuidaMed oferece uma interface CLI simples para cadastrar, listar, buscar e re
 
 Para configurar o projeto localmente, utilize:
 
-git clone https://github.com/HenriMafra/cuidamed.git
+```bash
+git clone [https://github.com/HenriMafra/cuidamed.git](https://github.com/HenriMafra/cuidamed.git)
 cd cuidamed
+
+# Opcional: ambiente virtual
 python -m venv venv
-source venv/bin/activate (Linux/Mac)
-venv\Scripts\activate (Windows)
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
+
 pip install -r requirements.txt
+Execução CLI
+Para iniciar a aplicação no terminal:
 
----
-
-## Execucão
-
-Para iniciar a aplicacao:
+Bash
 python src/main.py
+Você verá o menu interativo:
 
-Exemplo de interacao no terminal:
+Plaintext
+CuidaMed v1.1.0 - Gerenciador de Medicamentos
 
-CuidaMed v1.0.0 - Gerenciador de Medicamentos
-1. Adicionar medicamento
-2. Listar medicamentos
-3. Remover medicamento
-4. Buscar medicamento
-0. Sair
+  1. Adicionar medicamento
+  2. Listar medicamentos
+  3. Remover medicamento
+  4. Buscar medicamento
+  5. Consultar informações do medicamento (API)
+  0. Sair
+Execução Web (local)
+Para rodar a interface web na sua máquina:
 
-Escolha uma opção: 1
-Nome do Medicamento: Dipirona
-Horário da primeira dose: 08:00
-Doses por dia: 3
-
-[+] 'Dipirona' adicionado com sucesso! Dados salvos localmente.
-
----
-
-## Testes
-
+Bash
+streamlit run app.py
+Testes
 Comando para rodar os testes:
+
+Bash
 pytest tests/ -v
+Lint
+Comando para rodar a análise estática:
 
----
-
-## Lint
-
-Comando para rodar a analise estatica:
+Bash
 ruff check src/ tests/
+API Utilizada
+OpenFDA — base de dados pública da Food and Drug Administration (EUA).
 
----
+Endpoint: https://api.fda.gov/drug/label.json
 
-## Estrutura do Projeto
+Sem necessidade de chave de API
 
+Retorna: nome genérico, fabricante, via de administração, indicações e advertências
+
+Estrutura do Projeto
+Plaintext
 cuidamed/
 ├── src/
 │   ├── main.py
-│   └── medicamentos.py
+│   ├── medicamentos.py
+│   └── api.py
 ├── tests/
-│   └── test_medicamentos.py
+│   ├── test_medicamentos.py
+│   └── test_integracao.py
 ├── .github/
 │   └── workflows/
 │       └── ci.yml
+├── app.py
 ├── .gitignore
 ├── CHANGELOG.md
 ├── pyproject.toml
 ├── requirements.txt
 └── README.md
+Versão
+1.1.0 — Padrão Semântico MAJOR.MINOR.PATCH (veja CHANGELOG.md)
 
----
-
-## Versão
-
-1.0.0 — Padrão Semântico MAJOR.MINOR.PATCH (veja CHANGELOG.md)
-
----
-
-## Licença
-
+Licença
 Este projeto está sob a Licença MIT.
 
----
-
-## Autor
-
+Autor
 Henri Felipe Marques Mafra
-Ciencia de Dados e Machine Learning — UniCEUB
-3 Semestre — 2026
+Ciência de Dados e Machine Learning — UniCEUB
+3º Semestre — 2026
 Brasília, DF - Brasil
