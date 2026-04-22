@@ -14,7 +14,7 @@ No Brasil, erros na administração de medicamentos são uma das principais caus
 
 ## Proposta de Solução
 
-O CuidaMed oferece uma interface CLI simples e uma interface web (Streamlit) para cadastrar, listar, buscar e remover medicamentos com seus respectivos horários e doses diárias. A versão 1.1.0 adiciona integração com a API pública OpenFDA para consultar informações técnicas sobre medicamentos. Os cadastros do usuário são salvos localmente em um arquivo JSON (garantindo o funcionamento offline e a privacidade), enquanto a consulta avançada de bulas via API exige conexão com a internet.
+O CuidaMed oferece uma interface CLI simples e uma interface web (Streamlit) para cadastrar, listar, buscar e remover medicamentos com seus respectivos horários e doses diárias. A versão 1.1.0 adiciona integração com a API pública OpenFDA para consultar informações técnicas sobre medicamentos. Os cadastros do usuário são salvos localmente em um arquivo JSON (funcionando offline), enquanto a consulta avançada de bulas via API exige conexão com a internet.
 
 ## Público-alvo
 
@@ -27,10 +27,10 @@ O CuidaMed oferece uma interface CLI simples e uma interface web (Streamlit) par
 ## Funcionalidades
 
 * Adicionar medicamento com nome, horário e doses por dia
-* Listar todos os medicamentos cadastrados de forma organizada
-* Remover medicamento por nome para encerrar tratamentos
+* Listar todos os medicamentos cadastrados
+* Remover medicamento por nome
 * Buscar medicamento por nome ou parte do nome
-* Persistência automática de dados em arquivo JSON local
+* Persistência de dados em arquivo JSON local
 * **[NOVO]** Consultar informações de medicamentos via API pública OpenFDA
 * **[NOVO]** Interface web disponível online via Streamlit
 
@@ -47,28 +47,52 @@ O CuidaMed oferece uma interface CLI simples e uma interface web (Streamlit) par
 
 ---
 
-## Execução Web (Acesse Online)
+## Instalação
 
-A aplicação está disponível em: [https://cuidamed.streamlit.app/](https://cuidamed.streamlit.app/)
+```bash
+git clone [https://github.com/HenriMafra/cuidamed.git](https://github.com/HenriMafra/cuidamed.git)
+cd cuidamed
 
----
+# Opcional: ambiente virtual
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate     # Windows
 
-## Testes e Qualidade
+pip install -r requirements.txt
+Execução CLI
+Bash
+python src/main.py
+Você verá o menu interativo:
 
-O projeto utiliza **pytest** para testes de integração (OpenFDA) e **ruff** para análise estática de código, validados automaticamente via GitHub Actions.
+Plaintext
+CuidaMed v1.1.0 - Gerenciador de Medicamentos
 
----
+  1. Adicionar medicamento
+  2. Listar medicamentos
+  3. Remover medicamento
+  4. Buscar medicamento
+  5. Consultar informações do medicamento (API)
+  0. Sair
+Execução Web (local)
+Bash
+streamlit run app.py
+Testes
+Bash
+pytest tests/ -v
+Lint
+Bash
+ruff check src/ tests/
+API Utilizada
+OpenFDA — base de dados pública da Food and Drug Administration (EUA).
 
-## API Utilizada
+Endpoint: https://api.fda.gov/drug/label.json
 
-**OpenFDA** — base de dados pública da Food and Drug Administration (EUA).
-* Retorna: nome genérico, fabricante, via de administração, indicações e advertências.
+Sem necessidade de chave de API
 
----
+Retorna: nome genérico, fabricante, via de administração, indicações e advertências
 
-## Estrutura do Projeto
-
-```text
+Estrutura do Projeto
+Plaintext
 cuidamed/
 ├── src/
 │   ├── main.py
@@ -77,13 +101,21 @@ cuidamed/
 ├── tests/
 │   ├── test_medicamentos.py
 │   └── test_integracao.py
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── app.py
-├── README.md
-└── (arquivos de configuração)
+├── .gitignore
+├── CHANGELOG.md
+├── pyproject.toml
+├── requirements.txt
+└── README.md
 
+Versão
+1.1.0 — veja CHANGELOG.md
 
-Autor
-Henri Felipe Marques Mafra
+Autor:
+
+Henri Mafra
 Ciência de Dados e Machine Learning — UniCEUB
 3º Semestre — 2026
-Brasília, DF - Brasil
