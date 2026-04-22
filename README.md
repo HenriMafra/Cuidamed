@@ -47,54 +47,28 @@ O CuidaMed oferece uma interface CLI simples e uma interface web (Streamlit) par
 
 ---
 
-## Instalação
+## Execução Web (Acesse Online)
 
-Para configurar o projeto localmente, utilize:
+A aplicação está disponível em: [https://cuidamed.streamlit.app/](https://cuidamed.streamlit.app/)
 
-```bash
-git clone [https://github.com/HenriMafra/cuidamed.git](https://github.com/HenriMafra/cuidamed.git)
-cd cuidamed
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate     # Windows
-pip install -r requirements.txt
-Execução CLI
-Para iniciar a aplicação no terminal:
+---
 
-Bash
-python src/main.py
-Você verá o menu interativo:
+## Testes e Qualidade
 
-Plaintext
-CuidaMed v1.1.0 - Gerenciador de Medicamentos
+O projeto utiliza **pytest** para testes de integração (OpenFDA) e **ruff** para análise estática de código, validados automaticamente via GitHub Actions.
 
-  1. Adicionar medicamento
-  2. Listar medicamentos
-  3. Remover medicamento
-  4. Buscar medicamento
-  5. Consultar informações do medicamento (API)
-  0. Sair
-Execução Web (local)
-Bash
-streamlit run app.py
-Testes e Qualidade
-Rodar Testes:
+---
 
-Bash
-pytest tests/ -v
-Rodar Lint (Análise Estática):
+## API Utilizada
 
-Bash
-ruff check src/ tests/
-API Utilizada
-OpenFDA — base de dados pública da Food and Drug Administration (EUA).
+**OpenFDA** — base de dados pública da Food and Drug Administration (EUA).
+* Retorna: nome genérico, fabricante, via de administração, indicações e advertências.
 
-Endpoint: https://api.fda.gov/drug/label.json
+---
 
-Retorna: nome genérico, fabricante, via de administração, indicações e advertências.
+## Estrutura do Projeto
 
-Estrutura do Projeto
-Plaintext
+```text
 cuidamed/
 ├── src/
 │   ├── main.py
@@ -103,19 +77,10 @@ cuidamed/
 ├── tests/
 │   ├── test_medicamentos.py
 │   └── test_integracao.py
-├── .github/
-│   └── workflows/
-│       └── ci.yml
 ├── app.py
-├── .gitignore
-├── CHANGELOG.md
-├── pyproject.toml
-├── requirements.txt
-└── README.md
-Versão e Licença
-Versão: 1.1.0 — Padrão Semântico MAJOR.MINOR.PATCH
+├── README.md
+└── (arquivos de configuração)
 
-Licença: MIT
 
 Autor
 Henri Felipe Marques Mafra
