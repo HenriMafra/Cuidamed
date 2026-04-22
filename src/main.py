@@ -1,5 +1,4 @@
-import sys
-import os
+from medicamentos import GerenciadorMedicamentos
 
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -30,6 +29,8 @@ def menu():
 def main():
     medicamentos = carregar_medicamentos()
 
+def menu():
+    g = GerenciadorMedicamentos()
     while True:
         menu()
         opcao = input("  Escolha uma opção: ").strip()
@@ -88,4 +89,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    menu()
+
