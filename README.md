@@ -54,12 +54,9 @@ Para configurar o projeto localmente, utilize:
 ```bash
 git clone [https://github.com/HenriMafra/cuidamed.git](https://github.com/HenriMafra/cuidamed.git)
 cd cuidamed
-
-# Opcional: ambiente virtual
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
 venv\Scripts\activate     # Windows
-
 pip install -r requirements.txt
 Execução CLI
 Para iniciar a aplicação no terminal:
@@ -78,17 +75,14 @@ CuidaMed v1.1.0 - Gerenciador de Medicamentos
   5. Consultar informações do medicamento (API)
   0. Sair
 Execução Web (local)
-Para rodar a interface web na sua máquina:
-
 Bash
 streamlit run app.py
-Testes
-Comando para rodar os testes:
+Testes e Qualidade
+Rodar Testes:
 
 Bash
 pytest tests/ -v
-Lint
-Comando para rodar a análise estática:
+Rodar Lint (Análise Estática):
 
 Bash
 ruff check src/ tests/
@@ -97,9 +91,7 @@ OpenFDA — base de dados pública da Food and Drug Administration (EUA).
 
 Endpoint: https://api.fda.gov/drug/label.json
 
-Sem necessidade de chave de API
-
-Retorna: nome genérico, fabricante, via de administração, indicações e advertências
+Retorna: nome genérico, fabricante, via de administração, indicações e advertências.
 
 Estrutura do Projeto
 Plaintext
@@ -120,11 +112,10 @@ cuidamed/
 ├── pyproject.toml
 ├── requirements.txt
 └── README.md
-Versão
-1.1.0 — Padrão Semântico MAJOR.MINOR.PATCH (veja CHANGELOG.md)
+Versão e Licença
+Versão: 1.1.0 — Padrão Semântico MAJOR.MINOR.PATCH
 
-Licença
-Este projeto está sob a Licença MIT.
+Licença: MIT
 
 Autor
 Henri Felipe Marques Mafra
