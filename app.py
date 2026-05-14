@@ -1,109 +1,183 @@
-import json
 import os
-import requests
+
 import streamlit as st
 
-ARQUIVO = "medicamentos.json"
+from src.api import buscar_info_medicamento
+from src.medicamentos import adicionar, atualizar, buscar, listar, modo_armazenamento, remover
 
-def carregar():
-    if os.path.exists(ARQUIVO):
-        with open(ARQUIVO, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return []
 
-def salvar(dados):
-    with open(ARQUIVO, "w", encoding="utf-8") as f:
-        json.dump(dados, f, ensure_ascii=False, indent=2)
+def aplicar_segredos_streamlit():
+    for chave in (
+        "SUPABASE_URL",
+        "SUPABASE_KEY",
+        "SUPABASE_ANON_KEY",
+        "CUIDAMED_STORAGE",
+    ):
+        if os.getenv(chave):
+            continue
 
-def buscar_openfda(nome):
+        try:
+            valor = st.secrets.get(chave)
+        except Exception:
+            valor = None
+
+        if valor:
+            os.environ[chave] = str(valor)
+
+
+def carregar_medicamentos():
     try:
-        url = "https://api.fda.gov/drug/label.json"
-        r = requests.get(url, params={"search": f'openfda.brand_name:"{nome}"', "limit": 1}, timeout=5)
-        if r.status_code == 200:
-            resultados = r.json().get("results", [])
-            if resultados:
-                res = resultados[0]
-                openfda = res.get("openfda", {})
-                return {
-                    "nomes_genericos": openfda.get("generic_name", ["Não informado"]),
-                    "fabricante": openfda.get("manufacturer_name", ["Não informado"]),
-                    "via": openfda.get("route", ["Não informado"]),
-                    "indicacoes": res.get("indications_and_usage", ["Não disponível"]),
-                    "advertencias": res.get("warnings", ["Não disponível"]),
-                }
-        return None
-    except Exception as e:
-        return {"erro": str(e)}
+        return listar(), None
+    except RuntimeError as erro:
+        return [], str(erro)
 
-st.set_page_config(page_title="CuidaMed", page_icon="💊", layout="centered")
-st.title("💊 CuidaMed")
-st.caption("Gerenciador de horários de medicamentos")
 
-medicamentos = carregar()
-aba = st.tabs(["Medicamentos", "Adicionar", "Buscar", "Consultar API"])
-
-with aba[0]:
-    st.subheader("Medicamentos cadastrados")
+def renderizar_lista(medicamentos):
     if not medicamentos:
         st.info("Nenhum medicamento cadastrado ainda.")
-    else:
-        for m in medicamentos:
-            col1, col2, col3, col4 = st.columns([3, 2, 2, 1])
-            col1.write(f"**{m['nome']}**")
-            col2.write(m["horario"])
-            col3.write(f"{m['doses_por_dia']}x por dia")
-            if col4.button("🗑️", key=f"rem_{m['nome']}"):
-                medicamentos = [x for x in medicamentos if x["nome"] != m["nome"]]
-                salvar(medicamentos)
-                st.rerun()
+        return
 
-with aba[1]:
+    for medicamento in medicamentos:
+        col1, col2, col3, col4 = st.columns([3, 2, 2, 1])
+        col1.write(f"**{medicamento['nome']}**")
+        col2.write(medicamento["horario"])
+        col3.write(f"{medicamento['doses_por_dia']}x por dia")
+
+        if col4.button("🗑️", key=f"rem_{medicamento['nome']}"):
+            try:
+                remover(medicamento["nome"])
+                st.success("Medicamento removido.")
+                st.rerun()
+            except (RuntimeError, ValueError) as erro:
+                st.error(str(erro))
+
+
+def renderizar_adicao():
     st.subheader("Adicionar medicamento")
     with st.form("form_adicionar"):
         nome = st.text_input("Nome do medicamento")
         horario = st.text_input("Horário (ex: 08:00)")
         doses = st.number_input("Doses por dia", min_value=1, max_value=10, value=1)
         enviado = st.form_submit_button("Adicionar")
-    if enviado:
-        if nome and horario:
-            medicamentos.append({"nome": nome, "horario": horario, "doses_por_dia": int(doses)})
-            salvar(medicamentos)
-            st.success(f"'{nome}' adicionado com sucesso!")
-        else:
-            st.error("Preencha o nome e o horário.")
 
-with aba[2]:
+    if enviado:
+        try:
+            adicionar(nome, horario, int(doses))
+            st.success(f"'{nome}' adicionado com sucesso!")
+            st.rerun()
+        except (RuntimeError, ValueError) as erro:
+            st.error(str(erro))
+
+
+def renderizar_busca():
     st.subheader("Buscar medicamento")
     termo = st.text_input("Digite o nome ou parte do nome")
-    if termo:
-        encontrados = [m for m in medicamentos if termo.lower() in m["nome"].lower()]
-        if encontrados:
-            for m in encontrados:
-                st.write(f"**{m['nome']}** — {m['horario']} — {m['doses_por_dia']}x/dia")
-        else:
-            st.warning("Nenhum medicamento encontrado.")
+    if not termo:
+        return
+
+    try:
+        encontrados = buscar(termo)
+    except RuntimeError as erro:
+        st.error(str(erro))
+        return
+
+    if encontrados:
+        for medicamento in encontrados:
+            st.write(
+                f"**{medicamento['nome']}** — "
+                f"{medicamento['horario']} — "
+                f"{medicamento['doses_por_dia']}x/dia"
+            )
+    else:
+        st.warning("Nenhum medicamento encontrado.")
+
+
+def renderizar_atualizacao(medicamentos):
+    st.subheader("Atualizar medicamento")
+    if not medicamentos:
+        st.info("Cadastre um medicamento antes de atualizar.")
+        return
+
+    nomes = [medicamento["nome"] for medicamento in medicamentos]
+    nome_atual = st.selectbox("Medicamento", nomes)
+    medicamento = next(item for item in medicamentos if item["nome"] == nome_atual)
+
+    with st.form("form_atualizar"):
+        novo_nome = st.text_input("Novo nome", value=medicamento["nome"])
+        novo_horario = st.text_input("Novo horário", value=medicamento["horario"])
+        novas_doses = st.number_input(
+            "Novas doses por dia",
+            min_value=1,
+            max_value=10,
+            value=int(medicamento["doses_por_dia"]),
+        )
+        enviado = st.form_submit_button("Atualizar")
+
+    if enviado:
+        try:
+            atualizar(nome_atual, novo_nome, novo_horario, int(novas_doses))
+            st.success("Medicamento atualizado.")
+            st.rerun()
+        except (RuntimeError, ValueError) as erro:
+            st.error(str(erro))
+
+
+def renderizar_api():
+    st.subheader("Consultar informações (OpenFDA)")
+    st.caption("Busca informações na base pública da FDA. Use nomes em inglês.")
+    nome_api = st.text_input("Nome do medicamento (ex: Aspirin, Ibuprofen)")
+
+    if not st.button("Consultar"):
+        return
+
+    if not nome_api:
+        st.error("Digite o nome de um medicamento.")
+        return
+
+    with st.spinner("Consultando OpenFDA..."):
+        info = buscar_info_medicamento(nome_api)
+
+    if info and "erro" not in info:
+        st.success("Informações encontradas!")
+        col_a, col_b = st.columns(2)
+        col_a.metric("Nome genérico", ", ".join(info["nomes_genericos"]))
+        col_b.metric("Via", ", ".join(info["via_administracao"]))
+        st.write(f"**Fabricante:** {', '.join(info['fabricante'])}")
+        with st.expander("Indicações"):
+            st.write(info["indicacoes"][0])
+        with st.expander("Advertências"):
+            st.write(info["advertencias"][0])
+    elif info and "erro" in info:
+        st.error(info["erro"])
+    else:
+        st.warning("Nenhuma informação encontrada.")
+
+
+aplicar_segredos_streamlit()
+
+st.set_page_config(page_title="CuidaMed", page_icon="💊", layout="centered")
+st.title("💊 CuidaMed")
+st.caption("Gerenciador de horários de medicamentos")
+st.info(f"Armazenamento atual: {modo_armazenamento()}")
+
+medicamentos, erro_carregamento = carregar_medicamentos()
+if erro_carregamento:
+    st.error(erro_carregamento)
+
+aba = st.tabs(["Medicamentos", "Adicionar", "Buscar", "Atualizar", "Consultar API"])
+
+with aba[0]:
+    st.subheader("Medicamentos cadastrados")
+    renderizar_lista(medicamentos)
+
+with aba[1]:
+    renderizar_adicao()
+
+with aba[2]:
+    renderizar_busca()
 
 with aba[3]:
-    st.subheader("Consultar informações (OpenFDA)")
-    st.caption("Busca informações na base pública da FDA (nomes em inglês).")
-    nome_api = st.text_input("Nome do medicamento (ex: Aspirin, Ibuprofen)")
-    if st.button("Consultar"):
-        if nome_api:
-            with st.spinner("Consultando OpenFDA..."):
-                info = buscar_openfda(nome_api)
-            if info and "erro" not in info:
-                st.success("Informações encontradas!")
-                col_a, col_b = st.columns(2)
-                col_a.metric("Nome genérico", ", ".join(info["nomes_genericos"]))
-                col_b.metric("Via", ", ".join(info["via"]))
-                st.write(f"**Fabricante:** {', '.join(info['fabricante'])}")
-                with st.expander("Indicações"):
-                    st.write(info["indicacoes"][0])
-                with st.expander("Advertências"):
-                    st.write(info["advertencias"][0])
-            elif info and "erro" in info:
-                st.error(info["erro"])
-            else:
-                st.warning("Nenhuma informação encontrada.")
-        else:
-            st.error("Digite o nome de um medicamento.")
+    renderizar_atualizacao(medicamentos)
+
+with aba[4]:
+    renderizar_api()

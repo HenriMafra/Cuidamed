@@ -1,93 +1,147 @@
-from medicamentos import GerenciadorMedicamentos
-
-sys.path.insert(0, os.path.dirname(__file__))
-
-from medicamentos import (
-    carregar_medicamentos,
-    salvar_medicamentos,
-    adicionar_medicamento,
-    listar_medicamentos,
-    remover_medicamento,
-    buscar_medicamento,
-)
 from api import buscar_info_medicamento, formatar_info
+from medicamentos import adicionar, atualizar, buscar, listar, modo_armazenamento, remover
+
+VERSAO = "2.0.0"
 
 
-def menu():
-    print("\n" + "=" * 45)
-    print("  CuidaMed v1.1.0 - Gerenciador de Medicamentos")
-    print("=" * 45)
+def exibir_menu():
+    print("\n" + "=" * 50)
+    print(f"  CuidaMed v{VERSAO} - Gerenciador de Medicamentos")
+    print(f"  Armazenamento: {modo_armazenamento()}")
+    print("=" * 50)
     print("  1. Adicionar medicamento")
     print("  2. Listar medicamentos")
-    print("  3. Remover medicamento")
-    print("  4. Buscar medicamento")
-    print("  5. Consultar informações do medicamento (API)")
+    print("  3. Buscar medicamento")
+    print("  4. Remover medicamento")
+    print("  5. Consultar informacoes do medicamento (OpenFDA)")
+    print("  6. Atualizar medicamento")
     print("  0. Sair")
-    print("=" * 45)
+    print("=" * 50)
+
+
+def pedir_doses():
+    while True:
+        try:
+            return int(input("  Doses por dia: ").strip())
+        except ValueError:
+            print("  Digite um numero inteiro valido.")
+
+
+def adicionar_medicamento_cli():
+    nome = input("  Nome do medicamento: ").strip()
+    horario = input("  Horario inicial (HH:MM): ").strip()
+    doses = pedir_doses()
+
+    try:
+        adicionar(nome, horario, doses)
+        print(f"\n  '{nome}' adicionado com sucesso.")
+    except (RuntimeError, ValueError) as erro:
+        print(f"\n  Erro ao adicionar: {erro}")
+
+
+def listar_medicamentos_cli():
+    try:
+        medicamentos = listar()
+    except RuntimeError as erro:
+        print(f"\n  Erro ao listar: {erro}")
+        return
+
+    if not medicamentos:
+        print("\n  Nenhum medicamento cadastrado.")
+        return
+
+    print("\n  Medicamentos cadastrados:")
+    for medicamento in medicamentos:
+        print(
+            "  - "
+            f"{medicamento['nome']} | "
+            f"{medicamento['horario']} | "
+            f"{medicamento['doses_por_dia']}x/dia"
+        )
+
+
+def buscar_medicamento_cli():
+    termo = input("  Digite o nome ou parte dele: ").strip()
+    try:
+        encontrados = buscar(termo)
+    except RuntimeError as erro:
+        print(f"\n  Erro ao buscar: {erro}")
+        return
+
+    if not encontrados:
+        print("\n  Nenhum medicamento encontrado.")
+        return
+
+    print(f"\n  {len(encontrados)} resultado(s) encontrado(s):")
+    for medicamento in encontrados:
+        print(
+            "  - "
+            f"{medicamento['nome']} | "
+            f"{medicamento['horario']} | "
+            f"{medicamento['doses_por_dia']}x/dia"
+        )
+
+
+def remover_medicamento_cli():
+    nome = input("  Nome do medicamento para remover: ").strip()
+
+    try:
+        remover(nome)
+        print(f"\n  '{nome}' removido com sucesso.")
+    except (RuntimeError, ValueError) as erro:
+        print(f"\n  Erro ao remover: {erro}")
+
+
+def consultar_api_cli():
+    nome = input("  Nome do medicamento para consultar (ex: Aspirin): ").strip()
+    if not nome:
+        print("\n  Informe um nome para consulta.")
+        return
+
+    print("\n  Consultando OpenFDA...")
+    info = buscar_info_medicamento(nome)
+    if info:
+        print(formatar_info(info))
+    else:
+        print(f"\n  Nenhuma informacao encontrada para '{nome}' na base OpenFDA.")
+
+
+def atualizar_medicamento_cli():
+    nome_atual = input("  Nome atual do medicamento: ").strip()
+    novo_nome = input("  Novo nome: ").strip()
+    novo_horario = input("  Novo horario inicial (HH:MM): ").strip()
+    novas_doses = pedir_doses()
+
+    try:
+        atualizar(nome_atual, novo_nome, novo_horario, novas_doses)
+        print(f"\n  '{nome_atual}' atualizado com sucesso.")
+    except (RuntimeError, ValueError) as erro:
+        print(f"\n  Erro ao atualizar: {erro}")
 
 
 def main():
-    medicamentos = carregar_medicamentos()
-
-def menu():
-    g = GerenciadorMedicamentos()
     while True:
-        menu()
-        opcao = input("  Escolha uma opção: ").strip()
+        exibir_menu()
+        opcao = input("  Escolha uma opcao: ").strip()
 
         if opcao == "1":
-            nome = input("  Nome do medicamento: ").strip()
-            horario = input("  Horário (ex: 08:00): ").strip()
-            while True:
-                try:
-                    doses = int(input("  Doses por dia: ").strip())
-                    break
-                except ValueError:
-                    print("  Digite um número válido.")
-            medicamentos = adicionar_medicamento(medicamentos, nome, horario, doses)
-            salvar_medicamentos(medicamentos)
-            print(f"\n  '{nome}' adicionado com sucesso!")
-
+            adicionar_medicamento_cli()
         elif opcao == "2":
-            resultado = listar_medicamentos(medicamentos)
-            print("\n" + resultado)
-
+            listar_medicamentos_cli()
         elif opcao == "3":
-            nome = input("  Nome do medicamento a remover: ").strip()
-            medicamentos, removido = remover_medicamento(medicamentos, nome)
-            if removido:
-                salvar_medicamentos(medicamentos)
-                print(f"\n  '{nome}' removido com sucesso!")
-            else:
-                print(f"\n  '{nome}' não encontrado.")
-
+            buscar_medicamento_cli()
         elif opcao == "4":
-            termo = input("  Buscar por nome: ").strip()
-            encontrados = buscar_medicamento(medicamentos, termo)
-            if encontrados:
-                print(f"\n  {len(encontrados)} resultado(s) encontrado(s):")
-                for m in encontrados:
-                    print(f"  - {m['nome']} | {m['horario']} | {m['doses_por_dia']}x/dia")
-            else:
-                print("\n  Nenhum medicamento encontrado.")
-
+            remover_medicamento_cli()
         elif opcao == "5":
-            nome = input("  Nome do medicamento para consultar: ").strip()
-            print("\n  Consultando OpenFDA...")
-            info = buscar_info_medicamento(nome)
-            if info:
-                print(formatar_info(info))
-            else:
-                print(f"\n  Nenhuma informação encontrada para '{nome}' na base OpenFDA.")
-
+            consultar_api_cli()
+        elif opcao == "6":
+            atualizar_medicamento_cli()
         elif opcao == "0":
-            print("\n  Encerrando CuidaMed. Até logo!\n")
+            print("\n  Encerrando CuidaMed. Ate logo!\n")
             break
-
         else:
-            print("\n  Opção inválida. Tente novamente.")
+            print("\n  Opcao invalida. Tente novamente.")
 
 
 if __name__ == "__main__":
-    menu()
-
+    main()
