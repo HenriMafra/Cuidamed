@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.0.0] - 2026-05-14
+
+### Adicionado
+- Persistencia em banco de dados Supabase/PostgreSQL
+- Migracao SQL para criar a tabela `medicamentos` com RLS e politicas de acesso
+- Camada `supabase_repository.py` para isolar comunicacao com o banco
+- Funcionalidade de atualizacao de medicamentos na CLI e na interface web
+- Testes automatizados para o fluxo de armazenamento Supabase com mock
+
+### Alterado
+- Interface Streamlit passou a usar a regra de negocio central do projeto
+- README atualizado com instrucoes de Supabase, deploy, lint e testes
+
 ## [1.1.0] - 2026-03-16
 
 ### Adicionado

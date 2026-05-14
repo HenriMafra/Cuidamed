@@ -1,9 +1,11 @@
+from typing import Optional
+
 import requests
 
 OPENFDA_URL = "https://api.fda.gov/drug/label.json"
 
 
-def buscar_info_medicamento(nome: str) -> dict | None:
+def buscar_info_medicamento(nome: str) -> Optional[dict]:
     """
     Busca informações de um medicamento na API pública OpenFDA.
     Retorna um dicionário com informações ou None se não encontrar.
