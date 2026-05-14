@@ -1,9 +1,19 @@
 [project]
 name = "cuidamed"
-version = "1.0.0"
-description = "Gerenciador de horários de medicamentos para idosos e cuidadores"
+version = "2.0.0"
+description = "Gerenciador de horarios de medicamentos para idosos e cuidadores"
 requires-python = ">=3.9"
-dependencies = []
+dependencies = [
+    "requests>=2.31.0",
+    "streamlit>=1.33.0",
+    "supabase>=2.30.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.1.1",
+    "ruff>=0.4.4",
+]
 
 [tool.ruff]
 line-length = 100
