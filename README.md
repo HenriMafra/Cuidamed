@@ -1,89 +1,163 @@
 # CuidaMed
 
-[![CI](https://github.com/HenriMafra/cuidamed/actions/workflows/ci.yml/badge.svg)](https://github.com/HenriMafra/cuidamed/actions/workflows/ci.yml)
+[![CI](https://github.com/HenriMafra/Cuidamed/actions/workflows/ci.yml/badge.svg)](https://github.com/HenriMafra/Cuidamed/actions/workflows/ci.yml)
 
-Gerenciador de horários de medicamentos via linha de comando (CLI) e interface web, voltado para idosos, cuidadores e familiares que precisam organizar rotinas de medicação de forma simples e confiável.
+**Aplicação publicada:** [https://cuidamed.streamlit.app/](https://cuidamed.streamlit.app/)  
+**Repositório:** [https://github.com/HenriMafra/Cuidamed](https://github.com/HenriMafra/Cuidamed)
 
-**Aplicação publicada:** [https://cuidamed.streamlit.app/](https://cuidamed.streamlit.app/)
-
----
+Gerenciador de horários de medicamentos com interface CLI e web, criado para apoiar idosos, cuidadores e familiares na organização de rotinas de medicação.
 
 ## Problema Real
 
-No Brasil, erros na administração de medicamentos são uma das principais causas de internações entre idosos. Esquecer horários, tomar doses duplicadas ou interromper tratamentos são situações comuns, especialmente quando há múltiplos medicamentos envolvidos. Cuidadores e familiares muitas vezes não têm uma ferramenta simples para organizar e consultar essa rotina.
+Erros na administração de medicamentos são comuns em rotinas com vários remédios, horários e doses. Esquecimentos, doses duplicadas e interrupções de tratamento podem prejudicar especialmente idosos e pessoas que dependem de cuidadores.
 
 ## Proposta de Solução
 
-O CuidaMed oferece uma interface CLI simples e uma interface web (Streamlit) para cadastrar, listar, buscar e remover medicamentos com seus respectivos horários e doses diárias. A versão 1.1.0 adiciona integração com a API pública OpenFDA para consultar informações técnicas sobre medicamentos. Os cadastros do usuário são salvos localmente em um arquivo JSON (garantindo o funcionamento offline e a privacidade), enquanto a consulta avançada de bulas via API exige conexão com a internet.
+O CuidaMed permite cadastrar, listar, buscar, atualizar e remover medicamentos com horário e quantidade de doses por dia. A aplicação também consulta a API pública OpenFDA para exibir informações complementares sobre medicamentos, como nome genérico, fabricante, via de administração, indicações e advertências.
+
+Na versão `2.0.0`, os dados podem ser persistidos em um banco PostgreSQL hospedado no Supabase. Para desenvolvimento sem credenciais, o projeto mantém fallback local em JSON.
 
 ## Público-alvo
 
-* Idosos com rotina de medicação
-* Cuidadores e técnicos de enfermagem domiciliar
-* Familiares responsáveis pela medicação de parentes
-
----
+- Idosos com rotina de medicação.
+- Cuidadores e técnicos de enfermagem domiciliar.
+- Familiares responsáveis por organizar medicamentos de parentes.
 
 ## Funcionalidades
 
-* Adicionar medicamento com nome, horário e doses por dia
-* Listar todos os medicamentos cadastrados de forma organizada
-* Remover medicamento por nome para encerrar tratamentos
-* Buscar medicamento por nome ou parte do nome
-* Persistência automática de dados em arquivo JSON local
-* **[NOVO]** Consultar informações de medicamentos via API pública OpenFDA
-* **[NOVO]** Interface web disponível online via Streamlit
+- Adicionar medicamento.
+- Listar medicamentos cadastrados.
+- Buscar por nome ou parte do nome.
+- Atualizar nome, horário e doses.
+- Remover medicamento.
+- Persistir dados no Supabase.
+- Consultar informações públicas via OpenFDA.
+- Usar por CLI ou por interface web Streamlit.
 
----
+## Tecnologias Utilizadas
 
-## Tecnologias
+- Python 3.9+
+- Streamlit
+- Supabase/PostgreSQL
+- Requests
+- Pytest
+- Ruff
+- GitHub Actions
 
-* Python 3.9+
-* requests — consumo de API REST (OpenFDA)
-* streamlit — interface web para deploy
-* pytest — testes automatizados
-* ruff — linting e análise estática
-* GitHub Actions — integração contínua (CI)
+## Instalação
 
----
+```powershell
+git clone https://github.com/HenriMafra/Cuidamed.git
+cd Cuidamed
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install -r requirements.txt
+```
 
-## Execução Web (Acesse Online)
+Em Linux/macOS:
 
-A aplicação está disponível em: [https://cuidamed.streamlit.app/](https://cuidamed.streamlit.app/)
+```bash
+source .venv/bin/activate
+```
 
----
+## Configuração do Supabase
 
-## Testes e Qualidade
+Crie um projeto no Supabase e aplique a migração:
 
-O projeto utiliza **pytest** para testes de integração (OpenFDA) e **ruff** para análise estática de código, validados automaticamente via GitHub Actions.
+```powershell
+supabase login
+supabase link --project-ref SEU_PROJECT_REF
+supabase db push
+```
 
----
+Também é possível copiar o SQL de `supabase/migrations/20260514024319_create_medicamentos_table.sql` e executar no SQL Editor do Supabase.
 
-## API Utilizada
+Configure as variáveis de ambiente:
 
-**OpenFDA** — base de dados pública da Food and Drug Administration (EUA).
-* Retorna: nome genérico, fabricante, via de administração, indicações e advertências.
+```powershell
+$env:SUPABASE_URL="https://SEU_PROJECT_REF.supabase.co"
+$env:SUPABASE_KEY="SUA_CHAVE_ANON_OU_PUBLISHABLE"
+$env:CUIDAMED_STORAGE="supabase"
+```
 
----
+No Streamlit Cloud, configure os mesmos valores em **Settings > Secrets**:
+
+```toml
+SUPABASE_URL = "https://SEU_PROJECT_REF.supabase.co"
+SUPABASE_KEY = "SUA_CHAVE_ANON_OU_PUBLISHABLE"
+CUIDAMED_STORAGE = "supabase"
+```
+
+## Execução
+
+CLI:
+
+```powershell
+python src/main.py
+```
+
+Web local:
+
+```powershell
+streamlit run app.py
+```
+
+## Testes
+
+```powershell
+pytest tests/ -v
+```
+
+## Lint
+
+```powershell
+ruff check app.py src/ tests/
+```
+
+## CI
+
+O workflow em `.github/workflows/ci.yml` executa em push e pull request:
+
+- Instalação das dependências.
+- Lint com Ruff.
+- Testes automatizados com Pytest.
 
 ## Estrutura do Projeto
 
 ```text
-cuidamed/
+Cuidamed/
+├── .github/workflows/ci.yml
+├── app.py
 ├── src/
+│   ├── __init__.py
+│   ├── api.py
 │   ├── main.py
 │   ├── medicamentos.py
-│   └── api.py
+│   └── supabase_repository.py
+├── supabase/
+│   └── migrations/
+│       └── 20260514024319_create_medicamentos_table.sql
 ├── tests/
+│   ├── test_integracao.py
 │   ├── test_medicamentos.py
-│   └── test_integracao.py
-├── app.py
+│   └── test_supabase_storage.py
+├── CHANGELOG.md
 ├── README.md
-└── (arquivos de configuração)
+├── pyproject.toml
+└── requirements.txt
+```
 
+## Versão Atual
 
-Autor
-Henri Felipe Marques Mafra
-Ciência de Dados e Machine Learning — UniCEUB
-3º Semestre — 2026
+`2.0.0`
+
+## Integrantes
+
+- Henri Felipe Marques Mafra
+
+## Autor
+
+Henri Felipe Marques Mafra  
+Ciência de Dados e Machine Learning — UniCEUB  
+3º Semestre — 2026  
 Brasília, DF - Brasil

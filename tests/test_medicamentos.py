@@ -10,7 +10,8 @@ ARQUIVO_TESTE = "dados.json"
 
 
 @pytest.fixture(autouse=True)
-def limpar_dados():
+def limpar_dados(monkeypatch):
+    monkeypatch.setenv("CUIDAMED_STORAGE", "local")
     if os.path.exists(ARQUIVO_TESTE):
         os.remove(ARQUIVO_TESTE)
     yield
@@ -145,3 +146,21 @@ def test_buscar_retorna_multiplos():
     med.adicionar("Losartana 50mg", "20:00", 1)
     resultado = med.buscar("Losartana")
     assert len(resultado) == 2
+
+
+# --- Testes de atualizar ---
+
+def test_atualizar_medicamento_existente():
+    med.adicionar("Losartana", "08:00", 1)
+    atualizado = med.atualizar("Losartana", "Losartana Potássica", "09:00", 2)
+    dados = med.listar()
+
+    assert atualizado["nome"] == "Losartana Potássica"
+    assert atualizado["horario"] == "09:00"
+    assert atualizado["doses_por_dia"] == 2
+    assert dados[0]["nome"] == "Losartana Potássica"
+
+
+def test_atualizar_medicamento_inexistente_levanta_erro():
+    with pytest.raises(ValueError, match="não encontrado"):
+        med.atualizar("MedicamentoFantasma", "Aspirina", "08:00", 1)
