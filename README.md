@@ -1,6 +1,8 @@
 # CuidaMed
 
 [![CI](https://github.com/HenriMafra/Cuidamed/actions/workflows/ci.yml/badge.svg)](https://github.com/HenriMafra/Cuidamed/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
 
 **Aplicação publicada:** [https://cuidamed.streamlit.app/](https://cuidamed.streamlit.app/)  
 **Repositório:** [https://github.com/HenriMafra/Cuidamed](https://github.com/HenriMafra/Cuidamed)
@@ -102,6 +104,32 @@ Web local:
 streamlit run app.py
 ```
 
+## Exemplo de Uso (CLI)
+
+```text
+==================================================
+  CuidaMed v2.0.0 - Gerenciador de Medicamentos
+  Armazenamento: local
+==================================================
+  1. Adicionar medicamento
+  2. Listar medicamentos
+  3. Buscar medicamento
+  4. Remover medicamento
+  5. Consultar informacoes do medicamento (OpenFDA)
+  6. Atualizar medicamento
+  0. Sair
+==================================================
+  Escolha uma opcao: 1
+  Nome do medicamento: Losartana
+  Horario inicial (HH:MM): 08:00
+  Doses por dia: 1
+
+  'Losartana' adicionado com sucesso.
+```
+
+Na interface web (Streamlit), as mesmas operações ficam disponíveis em abas:
+**Medicamentos**, **Adicionar**, **Buscar**, **Atualizar** e **Consultar API**.
+
 ## Testes
 
 ```powershell
@@ -126,7 +154,12 @@ O workflow em `.github/workflows/ci.yml` executa em push e pull request:
 
 ```text
 Cuidamed/
-├── .github/workflows/ci.yml
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   │   ├── bug_report.md
+│   │   └── feature_request.md
+│   ├── pull_request_template.md
+│   └── workflows/ci.yml
 ├── app.py
 ├── src/
 │   ├── __init__.py
@@ -141,7 +174,10 @@ Cuidamed/
 │   ├── test_integracao.py
 │   ├── test_medicamentos.py
 │   └── test_supabase_storage.py
+├── .env.example
 ├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── LICENSE
 ├── README.md
 ├── pyproject.toml
 └── requirements.txt
@@ -151,11 +187,31 @@ Cuidamed/
 
 `2.0.0`
 
-## Integrantes
+## Integrantes da Equipe
 
-- Henri Felipe Marques Mafra
+| Nome completo | Matrícula | Usuário GitHub |
+| --- | --- | --- |
+| Henri Felipe Marques Mafra | _(preencher)_ | [@HenriMafra](https://github.com/HenriMafra) |
+| _(preencher — integrante 2)_ | _(preencher)_ | _(preencher)_ |
+| _(preencher — integrante 3)_ | _(preencher)_ | _(preencher)_ |
+| _(preencher — integrante 4)_ | _(preencher)_ | _(preencher)_ |
+| _(preencher — integrante 5)_ | _(preencher)_ | _(preencher)_ |
 
-## Autor
+> Trabalho final em equipe de até 5 integrantes. Preencha nome completo e
+> matrícula de cada membro e remova as linhas não utilizadas.
+
+## Como Contribuir
+
+Este projeto segue um fluxo colaborativo baseado em Issues, Branches, Pull
+Requests e Code Review. Consulte o [CONTRIBUTING.md](CONTRIBUTING.md) para o
+passo a passo completo (incluindo a regra de pelo menos 1 PR por integrante,
+revisado por outro membro da equipe).
+
+## Licença
+
+Distribuído sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## Autor / Mantenedor
 
 Henri Felipe Marques Mafra  
 Ciência de Dados e Machine Learning — UniCEUB  
