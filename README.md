@@ -192,13 +192,12 @@ Cuidamed/
 | Nome completo | Matrícula | Usuário GitHub |
 | --- | --- | --- |
 | Henri Felipe Marques Mafra | _(preencher)_ | [@HenriMafra](https://github.com/HenriMafra) |
-| _(preencher — integrante 2)_ | _(preencher)_ | _(preencher)_ |
-| _(preencher — integrante 3)_ | _(preencher)_ | _(preencher)_ |
-| _(preencher — integrante 4)_ | _(preencher)_ | _(preencher)_ |
-| _(preencher — integrante 5)_ | _(preencher)_ | _(preencher)_ |
+| Fernanda Souza de Araujo | _(preencher)_ | [@fernandasouzads](https://github.com/fernandasouzads) |
+| Lucca dos Santos Campelo Serpa | _(preencher)_ | [@luccacampelo](https://github.com/luccacampelo) |
+| Vinícius Ribeiro Soares | _(preencher)_ | [@vinisoares9](https://github.com/vinisoares9) |
+| Henrique Antonio Alvares de Sousa Goes | _(preencher)_ | [@Abacaxor](https://github.com/Abacaxor) |
 
-> Trabalho final em equipe de até 5 integrantes. Preencha nome completo e
-> matrícula de cada membro e remova as linhas não utilizadas.
+> As matrículas serão preenchidas pela equipe antes da entrega final.
 
 ## Como Contribuir
 
