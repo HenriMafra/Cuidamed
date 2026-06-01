@@ -1,5 +1,14 @@
 # Changelog
 
+## [Não lançado]
+
+### Adicionado
+- Arquivo `LICENSE` (MIT) e seção de licença no README
+- `CONTRIBUTING.md` com o fluxo colaborativo (Issues, Branches, PRs e Code Review)
+- Modelos de Issue (`bug_report`, `feature_request`) e de Pull Request em `.github/`
+- `.env.example` documentando as variáveis do Supabase
+- Tabela de integrantes (com matrícula) e exemplo de uso (CLI) no README
+
 ## [2.0.0] - 2026-05-14
 
 ### Adicionado
