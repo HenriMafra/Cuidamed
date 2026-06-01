@@ -197,7 +197,7 @@ Cuidamed/
 | Fernanda Souza de Araujo | _(preencher)_ | [@fernandasouzads](https://github.com/fernandasouzads) |
 | Lucca dos Santos Campelo Serpa | 22509509 | [@luccacampelo](https://github.com/luccacampelo) |
 | Vinícius Ribeiro Soares | 22511225 | [@vinisoares9](https://github.com/vinisoares9) |
-| Henrique Antonio Alvares de Sousa Goes | _(preencher)_ | [@Abacaxor](https://github.com/Abacaxor) |
+| Henrique Antonio Alvares de Sousa Goes | 22502409 | [@Abacaxor](https://github.com/Abacaxor) |
 
 > Matrículas restantes (Henri, Fernanda e Henrique) serão preenchidas antes da entrega final.
 
