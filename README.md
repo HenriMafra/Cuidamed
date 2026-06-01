@@ -193,13 +193,13 @@ Cuidamed/
 
 | Nome completo | Matrícula | Usuário GitHub |
 | --- | --- | --- |
-| Henri Felipe Marques Mafra | _(preencher)_ | [@HenriMafra](https://github.com/HenriMafra) |
+| Henri Felipe Marques Mafra | 22506958 | [@HenriMafra](https://github.com/HenriMafra) |
 | Fernanda Souza de Araujo | 22505971 | [@fernandasouzads](https://github.com/fernandasouzads) |
 | Lucca dos Santos Campelo Serpa | 22509509 | [@luccacampelo](https://github.com/luccacampelo) |
 | Vinícius Ribeiro Soares | 22511225 | [@vinisoares9](https://github.com/vinisoares9) |
 | Henrique Antonio Alvares de Sousa Goes | 22502409 | [@Abacaxor](https://github.com/Abacaxor) |
 
-> Falta apenas a matrícula de Henri Felipe Marques Mafra, a ser preenchida antes da entrega final.
+> Equipe de 5 integrantes — Entrega Final (Etapa 3): trabalho colaborativo com Pull Requests, Code Review e banco de dados em nuvem.
 
 ## Como Contribuir
 
