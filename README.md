@@ -189,15 +189,17 @@ Cuidamed/
 
 ## Integrantes da Equipe
 
+> **Projeto eleito pela equipe** como base da Entrega Final: **CuidaMed**, projeto individual de Henri Felipe Marques Mafra (dono do repositório).
+
 | Nome completo | Matrícula | Usuário GitHub |
 | --- | --- | --- |
 | Henri Felipe Marques Mafra | _(preencher)_ | [@HenriMafra](https://github.com/HenriMafra) |
 | Fernanda Souza de Araujo | _(preencher)_ | [@fernandasouzads](https://github.com/fernandasouzads) |
-| Lucca dos Santos Campelo Serpa | _(preencher)_ | [@luccacampelo](https://github.com/luccacampelo) |
-| Vinícius Ribeiro Soares | _(preencher)_ | [@vinisoares9](https://github.com/vinisoares9) |
+| Lucca dos Santos Campelo Serpa | 22509509 | [@luccacampelo](https://github.com/luccacampelo) |
+| Vinícius Ribeiro Soares | 22511225 | [@vinisoares9](https://github.com/vinisoares9) |
 | Henrique Antonio Alvares de Sousa Goes | _(preencher)_ | [@Abacaxor](https://github.com/Abacaxor) |
 
-> As matrículas serão preenchidas pela equipe antes da entrega final.
+> Matrículas restantes (Henri, Fernanda e Henrique) serão preenchidas antes da entrega final.
 
 ## Como Contribuir
 
